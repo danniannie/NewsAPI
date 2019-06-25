@@ -2,9 +2,8 @@ const connection = require("../connection");
 
 fetchUser = username => {
   return connection("users")
-    .where("username", username)
-    .returning("*")
-    .then(user => user);
+    .where("username", username.username)
+    .then(user => user[0]);
 };
 
 module.exports = { fetchUser };
