@@ -33,7 +33,7 @@ describe("/api", () => {
   });
 
   describe("/topics GET", () => {
-    it("GET /responds with a 200", () => {
+    it("GET /responds with a 200 and contains certain keys", () => {
       return request
         .get("/api/topics")
         .expect(200)
@@ -63,6 +63,27 @@ describe("/api", () => {
         .then(({ body: { user } }) => {
           expect(user).to.contain.keys("username", "name", "avatar_url");
         });
+    });
+    describe("GET /users/username ERRORS", () => {
+      it("responds 404 user not found", () => {
+        return request
+          .get("/api/users/123")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Error 404: Page Not Found");
+          });
+      });
+      it("INVALID METHOD responds 405", () => {
+        const invalidMethods = ["patch", "put", "delete"];
+        const methodPromises = invalidMethods.map(method => {
+          return request[method]("/api/users/lurker")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Method Not Allowed");
+            });
+        });
+        return Promise.all(methodPromises);
+      });
     });
   });
 });
