@@ -55,6 +55,7 @@ describe("/api", () => {
       });
     });
   });
+
   describe("/users/:username", () => {
     it("GET /responds with 200", () => {
       return request
@@ -86,51 +87,63 @@ describe("/api", () => {
       });
     });
   });
+
   describe("/articles/:article_id", () => {
-    it("GET /responds 200 for a successful", () => {
-      return request
-        .get("/api/articles/2")
-        .expect(200)
-        .then(({ body: { article } }) => {
-          expect(article).to.contain.keys(
-            "author",
-            "title",
-            "body",
-            "article_id",
-            "topic",
-            "created_at",
-            "votes",
-            "comment_count"
-          );
-        });
-    });
-    describe("GET /articles/article_id ERRORS", () => {
-      it("responds 404 article not found", () => {
+    describe("GET /articles/:article_id", () => {
+      it("GET /responds 200 for a successful", () => {
         return request
-          .get("/api/articles/123")
-          .expect(404)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal("Error 404: Page Not Found");
+          .get("/api/articles/2")
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article).to.contain.keys(
+              "author",
+              "title",
+              "body",
+              "article_id",
+              "topic",
+              "created_at",
+              "votes",
+              "comment_count"
+            );
           });
       });
-      it("responds 400 bad request when invalid input", () => {
-        return request
-          .get("/api/articles/hello")
-          .expect(400)
-          .then(({ body: { msg } }) => {
-            expect(msg).to.equal("Bad Request");
-          });
-      });
-      it("INVALID METHOD responds 405", () => {
-        const invalidMethods = ["post", "put"];
-        const methodPromises = invalidMethods.map(method => {
-          return request[method]("/api/articles/1")
-            .expect(405)
+      describe("GET /articles/article_id ERRORS", () => {
+        it("responds 404 article not found", () => {
+          return request
+            .get("/api/articles/123")
+            .expect(404)
             .then(({ body: { msg } }) => {
-              expect(msg).to.equal("Method Not Allowed");
+              expect(msg).to.equal("Error 404: Page Not Found");
             });
         });
-        return Promise.all(methodPromises);
+        it("responds 400 bad request when invalid input", () => {
+          return request
+            .get("/api/articles/hello")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Bad Request");
+            });
+        });
+        it("INVALID METHOD responds 405", () => {
+          const invalidMethods = ["post", "put"];
+          const methodPromises = invalidMethods.map(method => {
+            return request[method]("/api/articles/1")
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.equal("Method Not Allowed");
+              });
+          });
+          return Promise.all(methodPromises);
+        });
+      });
+    });
+    describe("PATCH /articles/:article_id", () => {
+      it("responds 200 for successful patch", () => {
+        return request
+          .patch("/api/articles/2")
+          .send({ inc_votes: 24 })
+          .expect(200);
+        //.then(({ body: { article } }) => expect(article.votes).to.equal(24));
       });
     });
   });

@@ -8,6 +8,7 @@ const {
   handles400errors
 } = require("./errors/errors");
 
+app.use(express.json());
 app.use("/api", apiRouter);
 app.use(handleCustomErrors);
 app.all("/*", send404errors);

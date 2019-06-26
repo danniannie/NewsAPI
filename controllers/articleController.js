@@ -8,3 +8,9 @@ exports.getArticlesbyID = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.patchArticle = (req, res, next) => {
+  const article = req.params;
+  console.log(req.body);
+  res.status(200).send({ hi: "hello" });
+};
