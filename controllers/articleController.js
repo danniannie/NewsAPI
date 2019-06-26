@@ -10,6 +10,9 @@ exports.getArticlesbyID = (req, res, next) => {
 };
 
 exports.patchArticle = (req, res, next) => {
+  if (Object.keys(req.body).length > 1) {
+    return next({ status: 400, msg: "Bad Request" });
+  }
   const article = req.params;
   const votesToAdd = req.body.inc_votes;
   console.log(votesToAdd);
