@@ -20,3 +20,10 @@ exports.fetchArticlesbyID = ({ article_id }) => {
       return article;
     });
 };
+
+exports.updateArticle = ({ article_id }, votesToAdd) => {
+  return connection("articles")
+    .where({ article_id })
+    .increment({ votes: votesToAdd })
+    .returning("*");
+};
