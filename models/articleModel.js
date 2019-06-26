@@ -27,3 +27,10 @@ exports.updateArticle = ({ article_id }, votesToAdd) => {
     .increment({ votes: votesToAdd })
     .returning("*");
 };
+
+exports.createComment = ({ article_id }, { username, body }) => {
+  return connection
+    .insert({ author: username, body, article_id })
+    .into("comments")
+    .returning("*");
+};

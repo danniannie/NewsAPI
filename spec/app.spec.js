@@ -137,7 +137,7 @@ describe("/api", () => {
         });
       });
     });
-    describe.only("PATCH /articles/:article_id", () => {
+    describe("PATCH /articles/:article_id", () => {
       it("responds 200 for successful patch", () => {
         return request
           .patch("/api/articles/2")
@@ -184,6 +184,24 @@ describe("/api", () => {
               expect(msg).to.equal("Bad Request");
             });
         });
+      });
+    });
+  });
+  describe.only("/articles/:article_id/comments", () => {
+    describe("POST /articles/:article_id/comments", () => {
+      it("POST /responds with 201 for successful creation", () => {
+        return request
+          .post("/api/articles/1/comments")
+          .send({ username: "rogersop", body: "What a load of glitter" })
+          .expect(201)
+          .then(({ body: { newComment } }) => {
+            expect(newComment).to.contain.keys(
+              "author",
+              "body",
+              "article_id",
+              "comment_id"
+            );
+          });
       });
     });
   });
