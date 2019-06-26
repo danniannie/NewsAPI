@@ -32,7 +32,7 @@ describe("/api", () => {
     });
   });
 
-  describe("/topics GET", () => {
+  describe("/topics", () => {
     it("GET /responds with a 200 and contains certain keys", () => {
       return request
         .get("/api/topics")
@@ -77,6 +77,46 @@ describe("/api", () => {
         const invalidMethods = ["patch", "put", "delete"];
         const methodPromises = invalidMethods.map(method => {
           return request[method]("/api/users/lurker")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Method Not Allowed");
+            });
+        });
+        return Promise.all(methodPromises);
+      });
+    });
+  });
+  describe("/articles/:article_id", () => {
+    it("GET /responds 200 for a successful", () => {
+      return request
+        .get("/api/articles/2")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).to.contain.keys(
+            "author",
+            "title",
+            "body",
+            "article_id",
+            "topic",
+            "created_at",
+            "votes",
+            "comment_count"
+          );
+        });
+    });
+    describe("GET /articles/article_id ERRORS", () => {
+      it("responds 404 article not found", () => {
+        return request
+          .get("/api/article/123")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Error 404: Page Not Found");
+          });
+      });
+      it("INVALID METHOD responds 405", () => {
+        const invalidMethods = ["post", "put"];
+        const methodPromises = invalidMethods.map(method => {
+          return request[method]("/api/articles/1")
             .expect(405)
             .then(({ body: { msg } }) => {
               expect(msg).to.equal("Method Not Allowed");
