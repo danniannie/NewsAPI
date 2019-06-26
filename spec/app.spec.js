@@ -107,10 +107,18 @@ describe("/api", () => {
     describe("GET /articles/article_id ERRORS", () => {
       it("responds 404 article not found", () => {
         return request
-          .get("/api/article/123")
+          .get("/api/articles/123")
           .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).to.equal("Error 404: Page Not Found");
+          });
+      });
+      it("responds 400 bad request when invalid input", () => {
+        return request
+          .get("/api/articles/hello")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Bad Request");
           });
       });
       it("INVALID METHOD responds 405", () => {

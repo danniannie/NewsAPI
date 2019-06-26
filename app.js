@@ -4,12 +4,14 @@ const apiRouter = require("./routes/apiRouter");
 const {
   handles500errors,
   send404errors,
-  handleCustomErrors
+  handleCustomErrors,
+  handles400errors
 } = require("./errors/errors");
 
 app.use("/api", apiRouter);
 app.use(handleCustomErrors);
 app.all("/*", send404errors);
+app.use(handles400errors);
 
 //app.use(handleCustomErrors);
 
