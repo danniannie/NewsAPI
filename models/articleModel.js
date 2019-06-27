@@ -31,7 +31,8 @@ exports.fetchCommentsbyID = (
 exports.fetchArticles = (
   article_id,
   sort_by = "created_at",
-  order = "desc"
+  order = "desc",
+  author
 ) => {
   return connection
     .select("articles.*")
@@ -42,6 +43,7 @@ exports.fetchArticles = (
     .orderBy(sort_by, order)
     .modify(query => {
       if (article_id) query.where({ "articles.article_id": article_id });
+      if (author) query.where({ "articles.author": author });
     })
     .then(articles => {
       if (articles.length === 0) {

@@ -361,6 +361,7 @@ describe("/api", () => {
             expect(article).to.be.sortedBy("votes", { descending: true });
           });
       });
+
       it("/responds 200 and takes an order different from default", () => {
         return request
           .get("/api/articles?order=asc")
@@ -369,10 +370,14 @@ describe("/api", () => {
             expect(article).to.be.sortedBy("created_at", { descending: false });
           });
       });
-      // it('/responds 200 and takes a author as a filter', () => {
-      //   return request.get('/api/articles/filter=lurker').expect(200).then(({body: {articles}})=> {
-
-      //   })
+      it("/responds 200 and takes an author as a filter", () => {
+        return request
+          .get("/api/articles?author=rogersop")
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article[0].author).to.equal("rogersop");
+          });
+      });
     });
   });
 });
