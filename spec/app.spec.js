@@ -327,8 +327,8 @@ describe("/api", () => {
     });
   });
 
-  describe.only("/articles", () => {
-    describe("GET /articles", () => {
+  describe("/articles", () => {
+    describe.only("GET /articles", () => {
       it("GET responds 200 with an array", () => {
         return request
           .get("/api/articles")
@@ -345,6 +345,34 @@ describe("/api", () => {
             );
           });
       });
+      it("/responds 200 and default sort by by created_at and order desc", () => {
+        return request
+          .get("/api/articles")
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article).to.be.sortedBy("created_at", { descending: true });
+          });
+      });
+      it("/responds 200 and takes a sort by query", () => {
+        return request
+          .get("/api/articles?sort_by=votes")
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article).to.be.sortedBy("votes", { descending: true });
+          });
+      });
+      it("/responds 200 and takes an order different from default", () => {
+        return request
+          .get("/api/articles?order=asc")
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article).to.be.sortedBy("created_at", { descending: false });
+          });
+      });
+      // it('/responds 200 and takes a author as a filter', () => {
+      //   return request.get('/api/articles/filter=lurker').expect(200).then(({body: {articles}})=> {
+
+      //   })
     });
   });
 });

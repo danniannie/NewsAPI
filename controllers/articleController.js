@@ -5,15 +5,6 @@ const {
   fetchCommentsbyID
 } = require("../models/articleModel");
 
-exports.getArticlesbyID = (req, res, next) => {
-  const { article_id } = req.params;
-  fetchArticles(article_id)
-    .then(([article]) => {
-      return res.status(200).send({ article });
-    })
-    .catch(next);
-};
-
 exports.patchArticle = (req, res, next) => {
   if (Object.keys(req.body).length > 1) {
     return next({ status: 400, msg: "Bad Request" });
@@ -50,9 +41,18 @@ exports.getComments = (req, res, next) => {
     .catch(next);
 };
 
+exports.getArticlesbyID = (req, res, next) => {
+  const { article_id } = req.params;
+  fetchArticles(article_id)
+    .then(([article]) => {
+      return res.status(200).send({ article });
+    })
+    .catch(next);
+};
+
 exports.getArticles = (req, res, next) => {
-  const article_id = req.params;
-  fetchArticles()
+  const { sort_by, order } = req.query;
+  fetchArticles(null, sort_by, order)
     .then(article => {
       return res.status(200).send({ article });
     })
