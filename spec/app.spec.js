@@ -378,6 +378,21 @@ describe("/api", () => {
             expect(article[0].author).to.equal("rogersop");
           });
       });
+      it("/responds 200 and takes a topic as a filter", () => {
+        return request
+          .get("/api/articles?topic=cats")
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article[0].topic).to.equal("cats");
+          });
+      });
     });
   });
 });
+
+// it("/responds 200 and takes an topic as a filter", () => {
+//   return request
+//     .get("/api/articles?topic=mitch")
+//     .expect(200)
+//     .then(();
+// });

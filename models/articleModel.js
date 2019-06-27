@@ -32,7 +32,8 @@ exports.fetchArticles = (
   article_id,
   sort_by = "created_at",
   order = "desc",
-  author
+  author,
+  topic
 ) => {
   return connection
     .select("articles.*")
@@ -44,6 +45,7 @@ exports.fetchArticles = (
     .modify(query => {
       if (article_id) query.where({ "articles.article_id": article_id });
       if (author) query.where({ "articles.author": author });
+      if (topic) query.where({ "articles.topic": topic });
     })
     .then(articles => {
       if (articles.length === 0) {
