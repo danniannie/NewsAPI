@@ -438,44 +438,55 @@ describe("/api", () => {
               expect(updatedComment.votes).to.equal(36);
             });
         });
-        // it("responds 200 for a negative number", () => {
-        //   return request
-        //     .patch("/api/articles/1")
-        //     .send({ inc_votes: -50 })
-        //     .expect(200)
-        //     .then(({ body: { updatedArticle } }) => {
-        //       expect(updatedArticle.votes).to.equal(50);
-        //     });
-        // });
-        // describe("PATCH /articles/:article_id ERRORS", () => {
-        //   it("responds status: 400 when passed no body ", () => {
-        //     return request
-        //       .patch("/api/articles/1")
-        //       .send({})
-        //       .expect(400)
-        //       .then(({ body: { msg } }) => {
-        //         expect(msg).to.equal("Bad Request");
-        //       });
-        //   });
-        //   it("responds 400 when passed an invalid data type", () => {
-        //     return request
-        //       .patch("/api/articles/1")
-        //       .send({ inc_votes: "cat" })
-        //       .expect(400)
-        //       .then(({ body: { msg } }) => {
-        //         expect(msg).to.equal("Bad Request");
-        //       });
-        //   });
-        //   it("responds 400 when passed another property on body", () => {
-        //     return request
-        //       .patch("/api/articles/1")
-        //       .send({ inc_votes: 2, title: "what a day" })
-        //       .expect(400)
-        //       .then(({ body: { msg } }) => {
-        //         expect(msg).to.equal("Bad Request");
-        //       });
-        //   });
-        // });
+        it("responds 200 for a negative number", () => {
+          return request
+            .patch("/api/comments/1")
+            .send({ inc_votes: -2 })
+            .expect(200)
+            .then(({ body: { updatedComment } }) => {
+              expect(updatedComment.votes).to.equal(14);
+            });
+        });
+        describe("PATCH /comments/:comment_id ERRORS", () => {
+          it("responds status: 400 when passed no body ", () => {
+            return request
+              .patch("/api/comments/1")
+              .send({})
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.equal("Bad Request");
+              });
+          });
+          it("responds 400 when passed an invalid data type", () => {
+            return request
+              .patch("/api/comments/1")
+              .send({ inc_votes: "cat" })
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.equal("Bad Request");
+              });
+          });
+          it("responds 400 when passed another property on body", () => {
+            return request
+              .patch("/api/comments/1")
+              .send({ inc_votes: 2, body: "what a day" })
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.equal("Bad Request");
+              });
+          });
+          it("responds 405 INVALID METHODS", () => {
+            const invalidMethods = ["get", "put", "post"];
+            const methodPromises = invalidMethods.map(method => {
+              return request[method]("/api/comments/1")
+                .expect(405)
+                .then(({ body: { msg } }) => {
+                  expect(msg).to.equal("Method Not Allowed");
+                });
+            });
+            return Promise.all(methodPromises);
+          });
+        });
       });
     });
   });
