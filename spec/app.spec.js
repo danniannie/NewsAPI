@@ -4,6 +4,9 @@ const { expect } = require("chai");
 const app = require("../app");
 const request = require("supertest")(app);
 const connection = require("../connection");
+const chaiSorted = require("chai-sorted");
+
+chai.use(chaiSorted);
 
 describe("/api", () => {
   beforeEach(() => {
@@ -187,7 +190,7 @@ describe("/api", () => {
       });
     });
   });
-  describe.only("/articles/:article_id/comments", () => {
+  describe("/articles/:article_id/comments", () => {
     describe("POST /articles/:article_id/comments", () => {
       it("POST /responds with 201 for successful creation", () => {
         return request
@@ -200,6 +203,145 @@ describe("/api", () => {
               "body",
               "article_id",
               "comment_id"
+            );
+          });
+      });
+      describe("POST /articles/:article_id/comments ERRORS", () => {
+        it("POST /responds 400 when invalid keys in body", () => {
+          return request
+            .post("/api/articles/1/comments")
+            .send({ username: "rogersop", dogs: 2 })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Bad Request");
+            });
+        });
+        it("POST /responds 400 when extra keys in body", () => {
+          return request
+            .post("/api/articles/1/comments")
+            .send({ username: "rogersop", dogs: 2, body: "hello" })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Bad Request");
+            });
+        });
+        it("POST /responds 400 when all invalid keys in body", () => {
+          return request
+            .post("/api/articles/1/comments")
+            .send({ cats: "rogersop", dogs: 2 })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Bad Request");
+            });
+        });
+        it("POST /responds 400 when no body in request", () => {
+          return request
+            .post("/api/articles/1/comments")
+            .send({})
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Bad Request");
+            });
+        });
+        it("POST /responds 422 when invalid keys in body", () => {
+          return request
+            .post("/api/articles/155/comments")
+            .send({ username: "rogersop", body: "hello" })
+            .expect(422)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Unprocessable Request");
+            });
+        });
+      });
+    });
+    describe("GET /articles/:article_id/comments", () => {
+      it("GET /responds with 200 and an array of comments", () => {
+        return request
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments[0]).to.contain.keys(
+              "comment_id",
+              "votes",
+              "created_at",
+              "author",
+              "body"
+            );
+          });
+      });
+      it("GET /defaults to sortBy created_at, orderBy desc when no query passed", () => {
+        return request
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments).to.be.sortedBy("created_at", { descending: true });
+          });
+      });
+      it("GET /takes a sortBy column and orders in desc as default", () => {
+        return request
+          .get("/api/articles/1/comments?sort_by=votes")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments).to.be.sortedBy("votes", { descending: true });
+          });
+      });
+      it("GET /takes asc rather than default", () => {
+        return request
+          .get("/api/articles/1/comments?order=asc")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments).to.be.sortedBy("created_at", {
+              descending: false
+            });
+          });
+      });
+      describe("GET /articles/:article_id/comments ERRORS", () => {
+        it("responds 404 when no articleID exists", () => {
+          return request
+            .get("/api/articles/hello/comments")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Bad Request");
+            });
+        });
+        it("responds 404 when sorting by non existant column", () => {
+          return request
+            .get("/api/articles/1/comments?sort_by=dogs")
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Bad Request");
+            });
+        });
+        it("INVALID METHOD responds 405", () => {
+          const invalidMethods = ["patch", "put", "delete"];
+          const methodPromises = invalidMethods.map(method => {
+            return request[method]("/api/articles/1/comments")
+              .expect(405)
+              .then(({ body: { msg } }) => {
+                expect(msg).to.equal("Method Not Allowed");
+              });
+          });
+          return Promise.all(methodPromises);
+        });
+      });
+    });
+  });
+
+  describe.only("/articles", () => {
+    describe("GET /articles", () => {
+      it("GET responds 200 with an array", () => {
+        return request
+          .get("/api/articles")
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect(article[0]).to.contain.keys(
+              "author",
+              "title",
+              "article_id",
+              "topic",
+              "created_at",
+              "votes",
+              "comment_count"
             );
           });
       });

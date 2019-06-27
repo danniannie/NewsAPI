@@ -1,6 +1,6 @@
 const connection = require("../connection");
 
-exports.fetchArticlesbyID = ({ article_id }) => {
+exports.fetchArticles = article_id => {
   return connection
     .select("articles.*")
     .count({ comment_count: "comment_id" })
@@ -10,14 +10,14 @@ exports.fetchArticlesbyID = ({ article_id }) => {
     .modify(query => {
       if (article_id) query.where({ "articles.article_id": article_id });
     })
-    .then(article => {
-      if (article.length === 0) {
+    .then(articles => {
+      if (articles.length === 0) {
         return Promise.reject({
           status: 404,
           msg: "Error 404: Page Not Found"
         });
       }
-      return article;
+      return articles;
     });
 };
 
@@ -33,4 +33,18 @@ exports.createComment = ({ article_id }, { username, body }) => {
     .insert({ author: username, body, article_id })
     .into("comments")
     .returning("*");
+};
+
+exports.fetchCommentsbyID = (
+  { article_id },
+  { sort_by = "created_at", order }
+) => {
+  if (order === undefined) {
+    order = "desc";
+  }
+  return connection
+    .select("*")
+    .from("comments")
+    .where({ article_id })
+    .orderBy(sort_by, order);
 };
