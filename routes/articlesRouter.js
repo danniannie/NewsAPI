@@ -21,6 +21,9 @@ articlesRouter
   .post(postComment)
   .all(send405error);
 
-articlesRouter.route("/").get(getArticles);
+articlesRouter
+  .route("/")
+  .get(getArticles)
+  .all(send405error);
 
 module.exports = articlesRouter;

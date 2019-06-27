@@ -1,6 +1,6 @@
 exports.handles400errors = (err, req, res, next) => {
   const errorCodes = ["22P02", "23502", "42703"];
-
+  console.log(err);
   if (errorCodes.includes(err.code)) {
     res.status(400).send({ msg: "Bad Request" });
   } else next(err);

@@ -328,7 +328,7 @@ describe("/api", () => {
   });
 
   describe("/articles", () => {
-    describe.only("GET /articles", () => {
+    describe("GET /articles", () => {
       it("GET responds 200 with an array", () => {
         return request
           .get("/api/articles")
@@ -387,12 +387,42 @@ describe("/api", () => {
           });
       });
     });
+    describe.only("GET /articles ERRORS", () => {
+      it("responds 405 INVALID METHODS", () => {
+        const invalidMethods = ["patch", "put", "delete"];
+        const methodPromises = invalidMethods.map(method => {
+          return request[method]("/api/articles")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Method Not Allowed");
+            });
+        });
+        return Promise.all(methodPromises);
+      });
+      it("/responds 400 when sort_by does not exist", () => {
+        return request
+          .get("/api/articles?sort_by=bananas")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Bad Request");
+          });
+      });
+      // it("/responds 400 when author does not exist", () => {
+      //   return request
+      //     .get("/api/articles?author=danni")
+      //     .expect(404)
+      //     .then(({ body: { msg } }) => {
+      //       expect(msg).to.equal("Not Found");
+      //     });
+      // });
+      // it("/responds 404 when topic does not exist", () => {
+      //   return request
+      //     .get("/api/articles?topic=danni")
+      //     .expect(404)
+      //     .then(({ body: { article } }) => {
+      //       expect(msg).to.equal("Not Found");
+      //     });
+      // });
+    });
   });
 });
-
-// it("/responds 200 and takes an topic as a filter", () => {
-//   return request
-//     .get("/api/articles?topic=mitch")
-//     .expect(200)
-//     .then(();
-// });
