@@ -31,11 +31,13 @@ To run tests you will need to have the below installed on your system which are 
 
 To ensure these are installed, run \$ npm i
 
+```
 Mocha - https://mochajs.org/
 Chai - https://www.chaijs.com/
 Chai Sorted - https://www.npmjs.com/package/chai-sorted
 Nodemon - https://nodemon.io/
 Supertest - https://www.npmjs.com/package/supertest
+```
 
 ## Deployment
 
@@ -44,9 +46,11 @@ https://nc-news-dy.herokuapp.com
 
 ## Built With
 
+```
 Express - https://expressjs.com/
 Knex - https://knexjs.org/
 Postgress - https://www.postgresql.org/
+```
 
 ## Authors
 
