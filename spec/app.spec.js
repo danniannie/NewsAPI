@@ -14,24 +14,31 @@ describe("/api", () => {
   });
   after(() => connection.destroy());
   describe("/api/", () => {
-    it("404 when incorrect path provided", () => {
-      return request
-        .get("/bananas")
-        .expect(404)
-        .then(({ body: { msg } }) => {
-          expect(msg).to.equal("Error 404: Page Not Found");
-        });
+    describe("GET /api/", () => {
+      it("GET /api/ responds 200 with json", () => {
+        return request.get("/api/").expect(200);
+      });
     });
-    it("INVALID METHOD responds 405", () => {
-      const invalidMethods = ["get", "patch", "put", "delete"];
-      const methodPromises = invalidMethods.map(method => {
-        return request[method]("/api")
-          .expect(405)
+    describe("/api/ ERRORS", () => {
+      it("404 when incorrect path provided", () => {
+        return request
+          .get("/bananas")
+          .expect(404)
           .then(({ body: { msg } }) => {
-            expect(msg).to.equal("Method Not Allowed");
+            expect(msg).to.equal("Error 404: Page Not Found");
           });
       });
-      return Promise.all(methodPromises);
+      it("INVALID METHOD responds 405", () => {
+        const invalidMethods = ["patch", "put", "delete"];
+        const methodPromises = invalidMethods.map(method => {
+          return request[method]("/api")
+            .expect(405)
+            .then(({ body: { msg } }) => {
+              expect(msg).to.equal("Method Not Allowed");
+            });
+        });
+        return Promise.all(methodPromises);
+      });
     });
   });
 

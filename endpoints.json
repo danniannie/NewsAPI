@@ -3,25 +3,142 @@
     "description": "serves up a json representation of all the available endpoints of the api"
   },
   "GET /api/topics": {
-    "description": "serves an array of all topics",
+    "description": "responds with an array of topic objects",
+    "queries": [],
+    "exampleResponse": [{ "slug": "coding", "description": "Coding is great!" }]
+  },
+  "GET /api/users/:username": {
+    "description": "responds with an user object",
+    "queries": [],
+    "exampleResponse": [
+      {
+        "username": "unicorn101",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        "name": "Sam"
+      }
+    ]
+  },
+
+  "GET /api/articles/:article_id": {
+    "description": "responds with an article object",
     "queries": [],
     "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+      "article": {
+        "article_id": 1,
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": 1527695953341,
+        "votes": 5,
+        "comment_count": 5
+      }
     }
   },
-  "GET /api/articles": {
-    "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+
+  "PATCH /api/articles/:article_id": {
+    "description": "responds with updated article",
+    "queries": [],
+    "patchBodyexample": { "inc_votes": 5 },
     "exampleResponse": {
-      "articles": [
+      "article": {
+        "article_id": 1,
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": 1527695953341,
+        "votes": 10,
+        "comment_count": 5
+      }
+    }
+  },
+
+  "POST /api/articles/:article_id/comments": {
+    "description": "responds with the posted comment",
+    "queries": [],
+    "postBodyexample": {
+      "username": "unicorn101",
+      "body": "Great article!"
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 1,
+        "author": "unicorn101",
+        "body": "Great article",
+        "created_at": 1527695953341,
+        "votes": 0
+      }
+    }
+  },
+
+  "GET /api/articles/:article_id/comments": {
+    "description": "responds with an array of comments for that article_id",
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "comments": [
         {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": 1527695953341
+          "comment_id": 1,
+          "author": "unicorn101",
+          "body": "Great article",
+          "created_at": 1527695953341,
+          "votes": 55
+        },
+        {
+          "comment_id": 2,
+          "author": "horses1",
+          "body": "Don't agree at all",
+          "created_at": 1527695953341,
+          "votes": 2
         }
       ]
     }
+  },
+  "GET /api/articles": {
+    "description": "responds with an array of articles",
+    "queries": ["sort_by", "order", "author", "topic"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "author": "unicorn101",
+          "title": "Seafood substitutions are increasing",
+          "article_id": 1,
+          "topic": "cooking",
+          "created_at": 1527695953341,
+          "votes": 50,
+          "comment_count": 4
+        },
+        {
+          "author": "horse2",
+          "title": "Less fish in the sea",
+          "article_id": 2,
+          "topic": "world",
+          "created_at": 1527695953341,
+          "votes": 200,
+          "comment_count": 40
+        }
+      ]
+    }
+  },
+
+  "PATCH /api/comments/:comment_id": {
+    "description": "responds with updated comment",
+    "queries": [],
+    "patchBodyexample": {
+      "inc_votes": 5
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 2,
+        "author": "horses1",
+        "body": "Don't agree at all",
+        "created_at": 1527695953341,
+        "votes": 7
+      }
+    }
+  },
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes comment under specified comment_id"
   }
 }

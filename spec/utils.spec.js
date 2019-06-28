@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { formatDate, makeRefObj, formatComments } = require("../db/utils/utils");
 
-describe.only("formatDate", () => {
+describe("formatDate", () => {
   it("returns an empty array when passed an empty array", () => {
     const actual = formatDate([]);
     const expected = [];
