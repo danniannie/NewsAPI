@@ -3,7 +3,7 @@ const chai = require("chai");
 const { expect } = require("chai");
 const app = require("../app");
 const request = require("supertest")(app);
-const connection = require("../connection");
+const connection = require("../db/connection");
 const chaiSorted = require("chai-sorted");
 
 chai.use(chaiSorted);
@@ -333,8 +333,8 @@ describe("/api", () => {
         return request
           .get("/api/articles")
           .expect(200)
-          .then(({ body: { article } }) => {
-            expect(article[0]).to.contain.keys(
+          .then(({ body: { articles } }) => {
+            expect(articles[0]).to.contain.keys(
               "author",
               "title",
               "article_id",
@@ -349,16 +349,16 @@ describe("/api", () => {
         return request
           .get("/api/articles")
           .expect(200)
-          .then(({ body: { article } }) => {
-            expect(article).to.be.sortedBy("created_at", { descending: true });
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.sortedBy("created_at", { descending: true });
           });
       });
       it("/responds 200 and takes a sort by query", () => {
         return request
           .get("/api/articles?sort_by=votes")
           .expect(200)
-          .then(({ body: { article } }) => {
-            expect(article).to.be.sortedBy("votes", { descending: true });
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.sortedBy("votes", { descending: true });
           });
       });
 
@@ -366,24 +366,26 @@ describe("/api", () => {
         return request
           .get("/api/articles?order=asc")
           .expect(200)
-          .then(({ body: { article } }) => {
-            expect(article).to.be.sortedBy("created_at", { descending: false });
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.sortedBy("created_at", {
+              descending: false
+            });
           });
       });
       it("/responds 200 and takes an author as a filter", () => {
         return request
           .get("/api/articles?author=rogersop")
           .expect(200)
-          .then(({ body: { article } }) => {
-            expect(article[0].author).to.equal("rogersop");
+          .then(({ body: { articles } }) => {
+            expect(articles[0].author).to.equal("rogersop");
           });
       });
       it("/responds 200 and takes a topic as a filter", () => {
         return request
           .get("/api/articles?topic=cats")
           .expect(200)
-          .then(({ body: { article } }) => {
-            expect(article[0].topic).to.equal("cats");
+          .then(({ body: { articles } }) => {
+            expect(articles[0].topic).to.equal("cats");
           });
       });
     });
@@ -428,7 +430,7 @@ describe("/api", () => {
 
   describe("/comments/:comment_id", () => {
     describe("PATCH /comments/:comment_id", () => {
-      describe.only("PATCH /comments/:comment_id", () => {
+      describe("PATCH /comments/:comment_id", () => {
         it("responds 200 for successful patch", () => {
           return request
             .patch("/api/comments/1")
@@ -436,6 +438,14 @@ describe("/api", () => {
             .expect(200)
             .then(({ body: { updatedComment } }) => {
               expect(updatedComment.votes).to.equal(36);
+              expect(updatedComment).to.contain.keys(
+                "comment_id",
+                "author",
+                "article_id",
+                "votes",
+                "created_at",
+                "body"
+              );
             });
         });
         it("responds 200 for a negative number", () => {
@@ -456,6 +466,12 @@ describe("/api", () => {
               .then(({ body: { msg } }) => {
                 expect(msg).to.equal("Bad Request");
               });
+          });
+          it("responds 404 when passed a invalid comment ID", () => {
+            return request
+              .patch("/api/comments/dog")
+              .send({ inc_votes: -2 })
+              .expect(400);
           });
           it("responds 400 when passed an invalid data type", () => {
             return request

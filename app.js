@@ -10,14 +10,12 @@ const {
 } = require("./errors/errors");
 
 app.use(express.json());
+
 app.use("/api", apiRouter);
-app.use(handleCustomErrors);
-app.use(handlesPSQL422errors);
 app.all("/*", send404errors);
 
+app.use(handleCustomErrors);
+app.use(handlesPSQL422errors);
 app.use(handles400errors);
-
-//app.use(handleCustomErrors);
-
 app.use(handles500errors);
 module.exports = app;

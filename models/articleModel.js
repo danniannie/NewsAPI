@@ -1,4 +1,4 @@
-const connection = require("../connection");
+const connection = require("../db/connection");
 
 exports.updateArticle = ({ article_id }, votesToAdd) => {
   return connection("articles")
@@ -39,7 +39,7 @@ exports.fetchArticles = (
     .select("articles.*")
     .count({ comment_count: "comment_id" })
     .from("articles")
-    .leftJoin("comments", "articles.article_id", "comments.comment_id")
+    .leftJoin("comments", "articles.article_id", "comments.article_id")
     .groupBy("articles.article_id")
     .orderBy(sort_by, order)
     .modify(query => {
