@@ -28,13 +28,13 @@ exports.fetchCommentsbyID = (
     .orderBy(sort_by, order);
 };
 
-exports.fetchArticles = (
+exports.fetchArticles = ({
   article_id,
   sort_by = "created_at",
   order = "desc",
   author,
   topic
-) => {
+}) => {
   const possibles = [undefined, "asc", "desc"];
   if (!possibles.includes(order)) {
     return Promise.reject({
