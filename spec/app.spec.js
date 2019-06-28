@@ -396,6 +396,22 @@ describe("/api", () => {
             expect(articles[0].topic).to.equal("cats");
           });
       });
+      it("responds 200 and has a default limit of 10", () => {
+        return request
+          .get("/api/articles?limit=10")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles.length).to.equal(10);
+          });
+      });
+      it("responds 200 and takes a different value for limit", () => {
+        return request
+          .get("/api/articles?limit=5")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles.length).to.equal(5);
+          });
+      });
     });
     describe("GET /articles ERRORS", () => {
       it("responds 405 INVALID METHODS", () => {
@@ -441,6 +457,14 @@ describe("/api", () => {
             expect(msg).to.equal("Error 404: Page Not Found");
           });
       });
+      // it.only("responds 400 when passed a non interger to limit", () => {
+      //   return request
+      //     .get("/api/articles?limit=yellow")
+      //     .expect(400)
+      //     .then(({ body: { msg } }) => {
+      //       expect(msg).to.equal("Bad Request");
+      //     });
+      // });
     });
   });
 
