@@ -1,16 +1,10 @@
 exports.formatDate = list => {
-  if (list.length === 0) {
-    return [];
-  }
-  const finalArray = [];
-  finalArray.push(...list);
-  finalArray.forEach(element => {
-    let time = new Date(element.created_at);
-    delete element.created_at;
-    element.created_at = time;
+  return list.map(({ created_at, ...listDatum }) => {
+    return {
+      created_at: new Date(created_at),
+      ...listDatum
+    };
   });
-
-  return finalArray;
 };
 
 exports.makeRefObj = (list, key, value) => {

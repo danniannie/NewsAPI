@@ -2,7 +2,7 @@ const connection = require("../db/connection");
 
 fetchUser = username => {
   return connection("users")
-    .where("username", username.username)
+    .where("username", username)
     .then(user => {
       if (user.length === 0) {
         return Promise.reject({

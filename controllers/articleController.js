@@ -9,12 +9,12 @@ exports.patchArticle = (req, res, next) => {
   if (Object.keys(req.body).length > 1) {
     return next({ status: 400, msg: "Bad Request" });
   }
-  const article = req.params;
-  const votesToAdd = req.body.inc_votes;
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
 
-  updateArticle(article, votesToAdd)
-    .then(([updatedArticle]) => {
-      res.status(200).send({ updatedArticle });
+  updateArticle(article_id, inc_votes)
+    .then(([article]) => {
+      res.status(200).send({ article });
     })
     .catch(next);
 };
@@ -23,11 +23,11 @@ exports.postComment = (req, res, next) => {
   if (Object.keys(req.body).length > 2) {
     return next({ status: 400, msg: "Bad Request" });
   }
-  const article = req.params;
-  const comment = req.body;
-  createComment(article, comment)
-    .then(([newComment]) => {
-      res.status(201).send({ newComment });
+  const { article_id } = req.params;
+  const { username, body } = req.body;
+  createComment(article_id, username, body)
+    .then(([comment]) => {
+      res.status(201).send({ comment });
     })
     .catch(next);
 };

@@ -6,7 +6,7 @@
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "knex seed:run --watch",
-    "test-utils": "mocha spec/utils.spec.js --watch",
+    "test-utils": "mocha spec/utils.spec.js",
     "test": "mocha spec/app.spec.js",
     "migrate-make": "knex migrate:make",
     "migrate-latest": "knex migrate:latest",

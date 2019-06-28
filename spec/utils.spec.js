@@ -1,12 +1,7 @@
 const { expect } = require("chai");
 const { formatDate, makeRefObj, formatComments } = require("../db/utils/utils");
 
-//takes an array of objects, for each object in the array, accesses the timestamp value and uses this to convert into the correct type and reassign this key to the new value
-
-//
-//returns a new array and does not mutate the original data
-
-describe("formatDate", () => {
+describe.only("formatDate", () => {
   it("returns an empty array when passed an empty array", () => {
     const actual = formatDate([]);
     const expected = [];
@@ -102,8 +97,6 @@ describe("formatDate", () => {
   });
 });
 
-// This utility function should be able to take an array(`list`) of objects and return a reference object.The reference object must be keyed by each item's title, with the values being each item's corresponding id.e.g.
-
 describe("makeRefObj", () => {
   it("returns an empty object, when passed an empty array", () => {
     const input = [];
@@ -167,17 +160,7 @@ describe("makeRefObj", () => {
   });
 });
 
-// This utility function should be able to take an array of comment objects(`comments`) and a reference object, and return a new array of formatted comments.
-
-// Each formatted comment must have:
-
-// - Its`created_by` property renamed to an`author` key
-//   - Its`belongs_to` property renamed to an`article_id` key
-//     - The value of the new `article_id` key must be the id corresponding to the original title value provided
-//       - Its`created_at` value converted into a javascript date object
-//         - The rest of the comment's properties must be maintained
-
-describe.only("formatComments", () => {
+describe("formatComments", () => {
   it("returns an empty object when passed an empty array", () => {
     const actual = formatComments([], {});
     const expected = [];

@@ -1,15 +1,15 @@
 const connection = require("../db/connection");
 
-exports.updateArticle = ({ article_id }, votesToAdd) => {
+exports.updateArticle = (article_id, votes) => {
   return connection("articles")
     .where({ article_id })
-    .increment({ votes: votesToAdd })
+    .increment({ votes })
     .returning("*");
 };
 
-exports.createComment = ({ article_id }, { username, body }) => {
+exports.createComment = (article_id, author, body) => {
   return connection
-    .insert({ author: username, body, article_id })
+    .insert({ author, body, article_id })
     .into("comments")
     .returning("*");
 };

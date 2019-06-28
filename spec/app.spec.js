@@ -146,8 +146,8 @@ describe("/api", () => {
           .patch("/api/articles/2")
           .send({ inc_votes: 24 })
           .expect(200)
-          .then(({ body: { updatedArticle } }) => {
-            expect(updatedArticle.votes).to.equal(24);
+          .then(({ body: { article } }) => {
+            expect(article.votes).to.equal(24);
           });
       });
       it("responds 200 for a negative number", () => {
@@ -155,8 +155,8 @@ describe("/api", () => {
           .patch("/api/articles/1")
           .send({ inc_votes: -50 })
           .expect(200)
-          .then(({ body: { updatedArticle } }) => {
-            expect(updatedArticle.votes).to.equal(50);
+          .then(({ body: { article } }) => {
+            expect(article.votes).to.equal(50);
           });
       });
       describe("PATCH /articles/:article_id ERRORS", () => {
@@ -197,8 +197,8 @@ describe("/api", () => {
           .post("/api/articles/1/comments")
           .send({ username: "rogersop", body: "What a load of glitter" })
           .expect(201)
-          .then(({ body: { newComment } }) => {
-            expect(newComment).to.contain.keys(
+          .then(({ body: { comment } }) => {
+            expect(comment).to.contain.keys(
               "author",
               "body",
               "article_id",
@@ -436,9 +436,9 @@ describe("/api", () => {
             .patch("/api/comments/1")
             .send({ inc_votes: 20 })
             .expect(200)
-            .then(({ body: { updatedComment } }) => {
-              expect(updatedComment.votes).to.equal(36);
-              expect(updatedComment).to.contain.keys(
+            .then(({ body: { comment } }) => {
+              expect(comment.votes).to.equal(36);
+              expect(comment).to.contain.keys(
                 "comment_id",
                 "author",
                 "article_id",
@@ -453,8 +453,8 @@ describe("/api", () => {
             .patch("/api/comments/1")
             .send({ inc_votes: -2 })
             .expect(200)
-            .then(({ body: { updatedComment } }) => {
-              expect(updatedComment.votes).to.equal(14);
+            .then(({ body: { comment } }) => {
+              expect(comment.votes).to.equal(14);
             });
         });
         describe("PATCH /comments/:comment_id ERRORS", () => {
