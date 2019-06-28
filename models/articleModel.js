@@ -35,6 +35,13 @@ exports.fetchArticles = (
   author,
   topic
 ) => {
+  const possibles = [undefined, "asc", "desc"];
+  if (!possibles.includes(order)) {
+    return Promise.reject({
+      status: 404,
+      msg: "Error 404: Page Not Found"
+    });
+  }
   return connection
     .select("articles.*")
     .count({ comment_count: "comment_id" })

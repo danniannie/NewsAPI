@@ -190,6 +190,7 @@ describe("/api", () => {
       });
     });
   });
+
   describe("/articles/:article_id/comments", () => {
     describe("POST /articles/:article_id/comments", () => {
       it("POST /responds with 201 for successful creation", () => {
@@ -409,22 +410,30 @@ describe("/api", () => {
             expect(msg).to.equal("Bad Request");
           });
       });
-      // it("/responds 400 when author does not exist", () => {
-      //   return request
-      //     .get("/api/articles?author=danni")
-      //     .expect(404)
-      //     .then(({ body: { msg } }) => {
-      //       expect(msg).to.equal("Not Found");
-      //     });
-      // });
-      // it("/responds 404 when topic does not exist", () => {
-      //   return request
-      //     .get("/api/articles?topic=danni")
-      //     .expect(404)
-      //     .then(({ body: { article } }) => {
-      //       expect(msg).to.equal("Not Found");
-      //     });
-      // });
+      it("/responds 404 when order is not asc, or desc", () => {
+        return request
+          .get("/api/articles?order=danni")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Error 404: Page Not Found");
+          });
+      });
+      it("/responds 404 when author does not exist", () => {
+        return request
+          .get("/api/articles?author=danni")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Error 404: Page Not Found");
+          });
+      });
+      it("/responds 404 when topic does not exist", () => {
+        return request
+          .get("/api/articles?topic=danni")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).to.equal("Error 404: Page Not Found");
+          });
+      });
     });
   });
 
@@ -502,6 +511,19 @@ describe("/api", () => {
             });
             return Promise.all(methodPromises);
           });
+        });
+      });
+    });
+    describe("DELETE /comments/:comment_id", () => {
+      it("responds 204 no content when successful delete", () => {
+        return request.delete("/api/comments/1").expect(204);
+      });
+      describe("DELETE /comments/:comment_id ERRORS", () => {
+        it("responds with 404 when comment ID does not exist", () => {
+          return request.delete("/api/comments/200").expect(404);
+        });
+        it("responds with 400 bad request when invalid comment id syntax", () => {
+          return request.delete("/api/comments/dogs").expect(400);
         });
       });
     });
