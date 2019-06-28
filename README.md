@@ -40,6 +40,7 @@ Supertest - https://www.npmjs.com/package/supertest
 ## Deployment
 
 This project can also be accessed using Heroku:
+https://nc-news-dy.herokuapp.com
 
 ## Built With
 
