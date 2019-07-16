@@ -34,7 +34,7 @@ exports.fetchArticles = ({
   order = "desc",
   author,
   topic,
-  limit
+  limit = 10
 }) => {
   const possibles = [undefined, "asc", "desc"];
   if (!possibles.includes(order)) {
@@ -43,6 +43,7 @@ exports.fetchArticles = ({
       msg: "Error 404: Page Not Found"
     });
   }
+
   return connection
     .select("articles.*")
     .count({ comment_count: "comment_id" })
@@ -50,7 +51,7 @@ exports.fetchArticles = ({
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .groupBy("articles.article_id")
     .orderBy(sort_by, order)
-    .limit(limit || 10)
+    .limit(limit)
     .modify(query => {
       if (article_id) query.where({ "articles.article_id": article_id });
       if (author) query.where({ "articles.author": author });

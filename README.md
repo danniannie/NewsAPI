@@ -1,6 +1,6 @@
 # NC-News Back-End Project
 
-One Paragraph of project description goes here
+The back-end part of the NC News project which will link with front-end to create an app in which you can view NC News.
 
 ## Getting Started
 

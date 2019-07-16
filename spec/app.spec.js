@@ -457,14 +457,14 @@ describe("/api", () => {
             expect(msg).to.equal("Error 404: Page Not Found");
           });
       });
-      // it.only("responds 400 when passed a non interger to limit", () => {
-      //   return request
-      //     .get("/api/articles?limit=yellow")
-      //     .expect(400)
-      //     .then(({ body: { msg } }) => {
-      //       expect(msg).to.equal("Bad Request");
-      //     });
-      // });
+      //   it("responds 400 when passed a non interger to limit", () => {
+      //     return request
+      //       .get("/api/articles?limit=yellow")
+      //       .expect(400)
+      //       .then(({ body: { msg } }) => {
+      //         expect(msg).to.equal("Bad Request");
+      //       });
+      //   });
     });
   });
 
