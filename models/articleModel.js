@@ -33,8 +33,7 @@ exports.fetchArticles = ({
   sort_by = "created_at",
   order = "desc",
   author,
-  topic,
-  limit = 10
+  topic
 }) => {
   const possibles = [undefined, "asc", "desc"];
   if (!possibles.includes(order)) {
@@ -51,7 +50,6 @@ exports.fetchArticles = ({
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .groupBy("articles.article_id")
     .orderBy(sort_by, order)
-    .limit(limit)
     .modify(query => {
       if (article_id) query.where({ "articles.article_id": article_id });
       if (author) query.where({ "articles.author": author });
